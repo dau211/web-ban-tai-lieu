@@ -13,29 +13,19 @@
 </head>
 <body class="bg-gray-50 flex flex-col min-h-screen font-sans">
 
-    <!-- Banner (Phần đầu trang) -->
-<header class="bg-blue-600 text-white shadow-md">
-    <div class="max-w-7xl mx-auto px-4 py-8">
-
-        <!-- Tiêu đề chính -->
-        <h1 class="text-4xl md:text-5xl font-extrabold uppercase tracking-wide">
-            THƯ VIỆN HỌC LIỆU
-        </h1>
-
-        <!-- Dòng mô tả -->
-        <p class="mt-2 text-lg md:text-xl text-blue-100">
-            Chọn lọc - Chất lượng - Cập nhật liên tục (ĐT: 0942.814.467)
-        </p>
-
-    </div>
-</header>
+    <header class="bg-blue-600 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <p class="text-sm font-semibold uppercase tracking-wider text-blue-200">Trường THPT Đào Duy Từ</p>
+            <h1 class="text-3xl font-bold mt-1">Hệ Thống Phân Phối Tài Liệu Vật lí</h1>
+        </div>
+    </header>
 
     <div class="flex-grow max-w-7xl mx-auto w-full flex flex-col md:flex-row p-4 gap-6">
         <aside class="w-full md:w-1/4 bg-white rounded-xl shadow-sm p-4 border border-gray-100 self-start">
             <h2 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex items-center">
                 <span class="mr-2">📁</span> Danh Mục Tài Liệu
             </h2>
-            <div id="danh-sach-thu-muc" class="space-y-2 text-gray-700">
+            <div id="danh-sach-thu-muc" class="space-y-1 text-gray-700">
                 <p class="text-sm text-gray-500">Đang tải danh mục...</p>
             </div>
         </aside>
@@ -88,6 +78,7 @@
             }
         }
 
+        // Cập nhật hàm tạo thư mục để có tính năng Xổ/Thu
         function taoCayThuMuc(data) {
             const thuMucMap = {};
             data.forEach(sp => {
@@ -98,14 +89,44 @@
             });
 
             const khungThuMuc = document.getElementById('danh-sach-thu-muc');
-            khungThuMuc.innerHTML = `<div onclick="hienThiSanPham(duLieuGoc, 'Tất cả tài liệu')" class="cursor-pointer font-bold text-blue-600 hover:text-blue-800 py-1 transition">🌍 Tất cả tài liệu</div>`;
+            khungThuMuc.innerHTML = `<div onclick="hienThiSanPham(duLieuGoc, 'Tất cả tài liệu')" class="cursor-pointer font-bold text-blue-600 hover:text-blue-800 py-2 border-b transition">🌍 Tất cả tài liệu</div>`;
 
+            let thuMucIndex = 0;
             for (const tm in thuMucMap) {
+                thuMucIndex++;
                 let htmlThuMucCon = '';
                 thuMucMap[tm].forEach(tmc => {
-                    htmlThuMucCon += `<div onclick="locSanPham('${tm}', '${tmc}')" class="cursor-pointer pl-6 py-1 text-sm text-gray-600 hover:text-blue-500 border-l-2 border-transparent hover:border-blue-400 transition">↳ ${tmc}</div>`;
+                    htmlThuMucCon += `<div onclick="locSanPham('${tm}', '${tmc}')" class="cursor-pointer pl-6 py-1.5 text-sm text-gray-600 hover:text-blue-500 border-l-2 border-transparent hover:border-blue-400 transition">↳ ${tmc}</div>`;
                 });
-                khungThuMuc.innerHTML += `<div class="mt-3"><div onclick="locSanPham('${tm}', null)" class="cursor-pointer font-semibold text-gray-800 hover:text-blue-600 py-1 flex items-center transition">📂 ${tm}</div><div class="flex flex-col">${htmlThuMucCon}</div></div>`;
+                
+                // Mặc định thêm class 'hidden' để ẩn các thư mục con đi, hiển thị mũi tên ▶
+                khungThuMuc.innerHTML += `
+                <div class="mt-2 border-b border-gray-100 pb-2">
+                    <div onclick="locSanPham('${tm}', null); toggleMenu('menu-${thuMucIndex}', 'icon-${thuMucIndex}')" class="flex justify-between items-center cursor-pointer group">
+                        <div class="font-semibold text-gray-800 group-hover:text-blue-600 py-1 flex-grow transition">
+                            📂 ${tm}
+                        </div>
+                        <div class="px-2 py-1 text-gray-400 group-hover:text-blue-600 transition text-xs">
+                            <span id="icon-${thuMucIndex}">▶</span>
+                        </div>
+                    </div>
+                    <div id="menu-${thuMucIndex}" class="flex flex-col hidden mt-1 overflow-hidden transition-all">
+                        ${htmlThuMucCon}
+                    </div>
+                </div>`;
+            }
+        }
+
+        // Hàm giúp Xổ ra / Thu vào
+        function toggleMenu(menuId, iconId) {
+            const menu = document.getElementById(menuId);
+            const icon = document.getElementById(iconId);
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden'); // Xổ ra
+                icon.innerText = '▼';            // Đổi mũi tên chúi xuống
+            } else {
+                menu.classList.add('hidden');    // Thu gọn lại
+                icon.innerText = '▶';            // Đổi mũi tên sang phải
             }
         }
 
@@ -129,22 +150,12 @@
                 let hienThiGia = '';
                 let nutHanhDong = '';
 
-                // KIỂM TRA: Nếu giá = 0 thì làm nút Miễn phí
                 if(sanPham.giaTien == 0 || sanPham.giaTien === "") {
                     hienThiGia = `<span class="text-2xl font-extrabold text-green-500 tracking-tight">Miễn phí</span>`;
-                    nutHanhDong = `
-                        <a href="${sanPham.linkTaiMienPhi}" target="_blank" class="w-full block text-center bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">
-                            📥 Tải miễn phí
-                        </a>
-                    `;
+                    nutHanhDong = `<a href="${sanPham.linkTaiMienPhi}" target="_blank" class="w-full block text-center bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">📥 Tải miễn phí file Word</a>`;
                 } else {
-                    // Ngược lại thì làm nút Mua hàng
                     hienThiGia = `<span class="text-2xl font-extrabold text-red-500 tracking-tight">${Number(sanPham.giaTien).toLocaleString('vi-VN')}đ</span>`;
-                    nutHanhDong = `
-                        <button onclick="moPopup('${sanPham.maSanPham}', '${sanPham.tenSanPham}', ${sanPham.giaTien})" class="w-full bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">
-                            🛒 Tải file Word
-                        </button>
-                    `;
+                    nutHanhDong = `<button onclick="moPopup('${sanPham.maSanPham}', '${sanPham.tenSanPham}', ${sanPham.giaTien})" class="w-full bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">🛒 Mua ngay file Word</button>`;
                 }
 
                 khungChua.innerHTML += `
@@ -158,9 +169,7 @@
                             ${hienThiGia}
                         </div>
                         <div class="space-y-2">
-                            <a href="${sanPham.linkPDF}" target="_blank" class="block w-full text-center bg-blue-50 text-blue-600 font-semibold py-2.5 rounded-lg hover:bg-blue-100 transition text-sm">
-                                👀 XEM TRƯỚC
-                            </a>
+                            <a href="${sanPham.linkPDF}" target="_blank" class="block w-full text-center bg-blue-50 text-blue-600 font-semibold py-2.5 rounded-lg hover:bg-blue-100 transition text-sm">👀 Xem trước PDF</a>
                             ${nutHanhDong}
                         </div>
                     </div>
