@@ -14,11 +14,20 @@
 <body class="bg-gray-50 flex flex-col min-h-screen font-sans">
 
     <header class="bg-blue-600 text-white shadow-md">
-        <div class="max-w-7xl mx-auto px-4 py-6">
-            <p class="text-sm font-semibold uppercase tracking-wider text-blue-200">Trường THPT Đào Duy Từ</p>
-            <h1 class="text-3xl font-bold mt-1">Hệ Thống Phân Phối Tài Liệu Vật lí</h1>
-        </div>
-    </header>
+    <div class="max-w-7xl mx-auto px-4 py-8">
+
+        <!-- Tiêu đề chính -->
+        <h1 class="text-4xl md:text-5xl font-extrabold uppercase tracking-wide">
+            THƯ VIỆN HỌC LIỆU
+        </h1>
+
+        <!-- Dòng mô tả -->
+        <p class="mt-2 text-lg md:text-xl text-blue-100">
+            Chọn lọc - Chất lượng - Cập nhật liên tục (ĐT: 0942.814.467)
+        </p>
+
+    </div>
+</header>
 
     <div class="flex-grow max-w-7xl mx-auto w-full flex flex-col md:flex-row p-4 gap-6">
         <aside class="w-full md:w-1/4 bg-white rounded-xl shadow-sm p-4 border border-gray-100 self-start">
@@ -155,7 +164,7 @@
                     nutHanhDong = `<a href="${sanPham.linkTaiMienPhi}" target="_blank" class="w-full block text-center bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">📥 Tải miễn phí file Word</a>`;
                 } else {
                     hienThiGia = `<span class="text-2xl font-extrabold text-red-500 tracking-tight">${Number(sanPham.giaTien).toLocaleString('vi-VN')}đ</span>`;
-                    nutHanhDong = `<button onclick="moPopup('${sanPham.maSanPham}', '${sanPham.tenSanPham}', ${sanPham.giaTien})" class="w-full bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">🛒 Mua ngay file Word</button>`;
+                    nutHanhDong = `<button onclick="moPopup('${sanPham.maSanPham}', '${sanPham.tenSanPham}', ${sanPham.giaTien})" class="w-full bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">🛒 Tải file Word</button>`;
                 }
 
                 khungChua.innerHTML += `
@@ -169,7 +178,7 @@
                             ${hienThiGia}
                         </div>
                         <div class="space-y-2">
-                            <a href="${sanPham.linkPDF}" target="_blank" class="block w-full text-center bg-blue-50 text-blue-600 font-semibold py-2.5 rounded-lg hover:bg-blue-100 transition text-sm">👀 Xem trước PDF</a>
+                            <a href="${sanPham.linkPDF}" target="_blank" class="block w-full text-center bg-blue-50 text-blue-600 font-semibold py-2.5 rounded-lg hover:bg-blue-100 transition text-sm">👀 XEM TRƯỚC</a>
                             ${nutHanhDong}
                         </div>
                     </div>
