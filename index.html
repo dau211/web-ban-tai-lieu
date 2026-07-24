@@ -68,7 +68,7 @@
                 </button>
             </div>
 
-            <!-- Khu vực 2: Hiện mã QR (Ẩn mặc định) -->
+            <!-- Khu vực 2: Hiện mã QR (Đã thêm nút Tải QR) -->
             <div id="khung-ma-qr" class="hidden text-center w-full">
                 <h3 class="text-lg font-bold text-blue-600 mb-1">Quét mã để thanh toán</h3>
                 <p class="text-xs text-gray-500 mb-3">Tài liệu sẽ được gửi vào Email của bạn ngay sau khi chúng tôi duyệt giao dịch.</p>
@@ -79,9 +79,18 @@
                     <p class="mb-1">Nội dung chuyển khoản (Bắt buộc):</p>
                     <strong id="ma-don-hien-thi" class="text-2xl text-red-600 tracking-widest font-mono"></strong>
                 </div>
-                <button onclick="dongPopup()" class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition shadow">
-                    Đã chuyển khoản xong (Đóng)
-                </button>
+                
+                <div class="flex flex-col gap-2">
+                    <!-- Nút Tải QR Mới Bổ Sung -->
+                    <button onclick="taiMaQR()" class="w-full bg-indigo-50 text-indigo-700 font-semibold py-2.5 rounded-lg border border-indigo-200 hover:bg-indigo-100 transition shadow-sm flex justify-center items-center text-sm">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Tải ảnh QR về máy
+                    </button>
+                    <!-- Nút Đóng (Cho phép thanh toán sau) -->
+                    <button onclick="dongPopup()" class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition shadow">
+                        Đã chuyển khoản / Thanh toán sau (Đóng)
+                    </button>
+                </div>
             </div>
 
         </div>
@@ -274,6 +283,27 @@
                 document.getElementById('anh-qr').src = urlVietQR;
                 document.getElementById('ma-don-hien-thi').innerText = maDonHang;
             }, 800); 
+        }
+
+        // --- HÀM TẢI MÃ QR VỀ MÁY CHO ĐIỆN THOẠI MỚI BỔ SUNG ---
+        async function taiMaQR() {
+            const imgUrl = document.getElementById('anh-qr').src;
+            try {
+                const response = await fetch(imgUrl);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'Ma-QR-Thanh-Toan.png';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                alert("✅ Đã tải ảnh QR về máy thành công! Bạn hãy mở App Ngân hàng, chọn biểu tượng Ảnh/Thư viện để quét mã nhé.");
+            } catch (error) {
+                // Đề phòng một số trình duyệt chặn tải xuống trực tiếp
+                alert("⚠️ Điện thoại không tự tải được. Bạn hãy Nhấn và Giữ vào ảnh QR khoảng 2 giây, rồi chọn 'Lưu hình ảnh' (Save Image) để tải về máy nhé!");
+            }
         }
 
         document.addEventListener('contextmenu', e => e.preventDefault());
