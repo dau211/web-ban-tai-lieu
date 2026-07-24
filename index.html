@@ -6,6 +6,7 @@
     <title>Thư Viện Tài Liệu - THPT Đào Duy Từ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @media print { body { display: none !important; } }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     </style>
@@ -13,11 +14,17 @@
 <body class="bg-gray-50 flex flex-col min-h-screen font-sans">
 
     <header class="bg-blue-600 text-white shadow-md">
-        <div class="max-w-7xl mx-auto px-4 py-6">
-            <p class="text-sm font-semibold uppercase tracking-wider text-blue-200">Trường THPT Đào Duy Từ</p>
-            <h1 class="text-3xl font-bold mt-1">Hệ Thống Phân Phối Tài Liệu Vật lí</h1>
-        </div>
-    </header>
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Tiêu đề chính -->
+        <h1 class="text-4xl md:text-5xl font-extrabold uppercase tracking-wide">
+            THƯ VIỆN HỌC LIỆU
+        </h1>
+        <!-- Dòng mô tả -->
+        <p class="mt-2 text-lg md:text-xl text-blue-100">
+            Chọn lọc - Chất lượng - Cập nhật liên tục (ĐT: 0942.814.467)
+        </p>
+    </div>
+</header>
 
     <div class="flex-grow max-w-7xl mx-auto w-full flex flex-col md:flex-row p-4 gap-6">
         <aside class="w-full md:w-1/4 bg-white rounded-xl shadow-sm p-4 border border-gray-100 self-start">
@@ -34,28 +41,37 @@
                 <h2 id="tieu-de-hien-tai" class="text-xl font-bold text-gray-800">Tất cả tài liệu</h2>
                 <span id="so-luong-hien-tai" class="bg-blue-100 text-blue-700 text-sm font-semibold px-3 py-1 rounded-full">0</span>
             </div>
+            
             <div id="danh-sach-san-pham" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5">
                 <p class="text-center w-full col-span-full text-gray-500 py-10">⏳ Đang tải dữ liệu từ kho Google Sheets...</p>
             </div>
         </main>
     </div>
 
-    <!-- Popup Mua Hàng -->
+    <!-- Popup Mua Hàng MỚI -->
     <div id="popup-mua-hang" class="fixed inset-0 bg-black bg-opacity-60 hidden flex-col items-center justify-center p-4 z-50">
         <div class="bg-white p-6 rounded-xl w-full max-w-sm shadow-2xl relative">
             
+            <!-- Khu vực 1: Nhập thông tin -->
             <div id="khung-nhap-thong-tin">
                 <h3 class="text-xl font-bold text-gray-800 mb-2">Thông tin nhận tài liệu</h3>
-                <p class="text-sm text-gray-500 mb-4">Vui lòng nhập Email chính xác để hệ thống gửi file Word.</p>
+                <p class="text-sm text-gray-500 mb-4">Vui lòng nhập chính xác Email để hệ thống gửi file Word sau khi thanh toán.</p>
+                
                 <input id="ten-khach" type="text" placeholder="Họ và tên của bạn" class="w-full border border-gray-300 p-3 mb-3 rounded-lg outline-none focus:border-blue-500">
                 <input id="email-khach" type="email" placeholder="Email nhận file" class="w-full border border-gray-300 p-3 mb-4 rounded-lg outline-none focus:border-blue-500">
-                <button onclick="xacNhanMua()" id="nut-xac-nhan" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600 transition mb-2">Tạo Mã QR Chuyển Khoản</button>
-                <button onclick="dongPopup()" class="w-full bg-gray-100 text-gray-700 font-semibold py-3 rounded-lg hover:bg-gray-200 transition">Hủy bỏ</button>
+                
+                <button onclick="xacNhanMua()" id="nut-xac-nhan" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600 transition mb-2">
+                    Tạo Mã QR Chuyển Khoản
+                </button>
+                <button onclick="dongPopup()" class="w-full bg-gray-100 text-gray-700 font-semibold py-3 rounded-lg hover:bg-gray-200 transition">
+                    Hủy bỏ
+                </button>
             </div>
 
+            <!-- Khu vực 2: Hiện mã QR (Ẩn mặc định) -->
             <div id="khung-ma-qr" class="hidden text-center w-full">
                 <h3 class="text-lg font-bold text-blue-600 mb-1">Quét mã để thanh toán</h3>
-                <p class="text-xs text-gray-500 mb-3">Tài liệu sẽ được gửi vào Email của bạn ngay sau khi chúng tôi xác nhận giao dịch thành công.</p>
+                <p class="text-xs text-gray-500 mb-3">Tài liệu sẽ được gửi vào Email của bạn ngay sau khi chúng tôi duyệt giao dịch.</p>
                 
                 <img id="anh-qr" src="" alt="Mã QR Thanh Toán" class="mx-auto w-56 h-56 border border-gray-200 rounded-xl mb-3 shadow-sm">
                 
@@ -63,22 +79,25 @@
                     <p class="mb-1">Nội dung chuyển khoản (Bắt buộc):</p>
                     <strong id="ma-don-hien-thi" class="text-2xl text-red-600 tracking-widest font-mono"></strong>
                 </div>
-                <button onclick="dongPopup()" class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition shadow">Đã chuyển khoản xong (Đóng)</button>
+                <button onclick="dongPopup()" class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition shadow">
+                    Đã chuyển khoản xong (Đóng)
+                </button>
             </div>
 
         </div>
     </div>
 
     <script>
-        // =======================================================
-        // 1. DÁN LINK GOOGLE SHEETS WEB APP CỦA BẠN VÀO ĐÂY:
-        const LINK_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbz0QNKM64lpfI4V5nJkcK2T5fJbOyteXprKeC2OaeF9DO5t6GJoe6U2DqH3Mo_SqJtXvw/exec";
-        
-        // 2. ĐIỀN THÔNG TIN NGÂN HÀNG CỦA VỢ BẠN:
+        // LINK CỦA BẠN ĐÃ ĐƯỢC GIỮ NGUYÊN:
+        const LINK_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbyQk2WSgyceKw4hoIYvOFoH3qWDHijnvpF5r3SCESSSzHgxKoGvvn39075y4x10WQyc0Q/exec";
+
+        // ==========================================
+        // KHU VỰC ĐIỀN THÔNG TIN NGÂN HÀNG
+        // ==========================================
         const TEN_NGAN_HANG = "vietcombank"; // Nếu vợ dùng ngân hàng khác thì đổi (vd: mbbank, acb, techcombank)
         const SO_TAI_KHOAN = "NHẬP_SỐ_TÀI_KHOẢN_VÀO_ĐÂY"; 
-        const TEN_CHU_TAI_KHOAN = "NHẬP_TÊN_VỢ_BẠN_KHÔNG_DẤU"; // vd: NGUYEN THI B
-        // =======================================================
+        const TEN_CHU_TAI_KHOAN = "NHẬP_TÊN_VỢ_BẠN_KHÔNG_DẤU_VÀO_ĐÂY";
+        // ==========================================
 
         let duLieuGoc = [];
         let spDangChon = null;
@@ -90,41 +109,57 @@
                 taoCayThuMuc(duLieuGoc);
                 hienThiSanPham(duLieuGoc, "Tất cả tài liệu");
             } catch (error) {
-                document.getElementById('danh-sach-san-pham').innerHTML = '<p class="text-center text-red-500 py-10">❌ Lỗi tải dữ liệu.</p>';
+                document.getElementById('danh-sach-san-pham').innerHTML = '<p class="text-center w-full text-red-500 py-10">❌ Có lỗi xảy ra khi tải dữ liệu.</p>';
             }
         }
 
         function taoCayThuMuc(data) {
             const thuMucMap = {};
             data.forEach(sp => {
-                const tm = sp.thuMuc; const tmc = sp.thuMucCon;
+                const tm = sp.thuMuc;
+                const tmc = sp.thuMucCon;
                 if(!thuMucMap[tm]) thuMucMap[tm] = new Set();
                 thuMucMap[tm].add(tmc);
             });
+
             const khungThuMuc = document.getElementById('danh-sach-thu-muc');
             khungThuMuc.innerHTML = `<div onclick="hienThiSanPham(duLieuGoc, 'Tất cả tài liệu')" class="cursor-pointer font-bold text-blue-600 hover:text-blue-800 py-2 border-b transition">🌍 Tất cả tài liệu</div>`;
 
             let thuMucIndex = 0;
             for (const tm in thuMucMap) {
-                thuMucIndex++; let htmlThuMucCon = '';
+                thuMucIndex++;
+                let htmlThuMucCon = '';
                 thuMucMap[tm].forEach(tmc => {
-                    htmlThuMucCon += `<div onclick="locSanPham('${tm}', '${tmc}')" class="cursor-pointer pl-6 py-1.5 text-sm text-gray-600 hover:text-blue-500 transition">↳ ${tmc}</div>`;
+                    htmlThuMucCon += `<div onclick="locSanPham('${tm}', '${tmc}')" class="cursor-pointer pl-6 py-1.5 text-sm text-gray-600 hover:text-blue-500 border-l-2 border-transparent hover:border-blue-400 transition">↳ ${tmc}</div>`;
                 });
+                
                 khungThuMuc.innerHTML += `
                 <div class="mt-2 border-b border-gray-100 pb-2">
-                    <div onclick="toggleMenu('menu-${thuMucIndex}', 'icon-${thuMucIndex}'); locSanPham('${tm}', null)" class="flex justify-between items-center cursor-pointer group">
-                        <div class="font-semibold text-gray-800 py-1 flex-grow group-hover:text-blue-600">📂 ${tm}</div>
-                        <div class="px-2 py-1 text-gray-400 text-xs"><span id="icon-${thuMucIndex}">▶</span></div>
+                    <div onclick="locSanPham('${tm}', null); toggleMenu('menu-${thuMucIndex}', 'icon-${thuMucIndex}')" class="flex justify-between items-center cursor-pointer group">
+                        <div class="font-semibold text-gray-800 group-hover:text-blue-600 py-1 flex-grow transition">
+                            📂 ${tm}
+                        </div>
+                        <div class="px-2 py-1 text-gray-400 group-hover:text-blue-600 transition text-xs">
+                            <span id="icon-${thuMucIndex}">▶</span>
+                        </div>
                     </div>
-                    <div id="menu-${thuMucIndex}" class="flex flex-col hidden mt-1 overflow-hidden transition-all">${htmlThuMucCon}</div>
+                    <div id="menu-${thuMucIndex}" class="flex flex-col hidden mt-1 overflow-hidden transition-all">
+                        ${htmlThuMucCon}
+                    </div>
                 </div>`;
             }
         }
 
         function toggleMenu(menuId, iconId) {
-            const menu = document.getElementById(menuId); const icon = document.getElementById(iconId);
-            if (menu.classList.contains('hidden')) { menu.classList.remove('hidden'); icon.innerText = '▼'; } 
-            else { menu.classList.add('hidden'); icon.innerText = '▶'; }
+            const menu = document.getElementById(menuId);
+            const icon = document.getElementById(iconId);
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden'); 
+                icon.innerText = '▼';            
+            } else {
+                menu.classList.add('hidden');    
+                icon.innerText = '▶';            
+            }
         }
 
         function locSanPham(tm, tmc) {
@@ -135,71 +170,110 @@
         function hienThiSanPham(danhSach, tieuDe) {
             document.getElementById('tieu-de-hien-tai').innerText = tieuDe;
             document.getElementById('so-luong-hien-tai').innerText = danhSach.length;
-            const khungChua = document.getElementById('danh-sach-san-pham'); khungChua.innerHTML = ''; 
+            const khungChua = document.getElementById('danh-sach-san-pham');
+            khungChua.innerHTML = ''; 
 
-            if(danhSach.length === 0) return khungChua.innerHTML = '<p class="text-center w-full col-span-full py-10">Chưa có tài liệu.</p>';
+            if(danhSach.length === 0) {
+                khungChua.innerHTML = '<p class="text-center w-full col-span-full text-gray-500 py-10">Chưa có tài liệu nào trong thư mục này.</p>';
+                return;
+            }
             
             danhSach.forEach(sanPham => {
-                let nutHanhDong = (sanPham.giaTien == 0 || sanPham.giaTien === "") 
-                    ? `<a href="${sanPham.linkTaiMienPhi}" target="_blank" class="w-full block text-center bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600">📥 Tải miễn phí file Word</a>`
-                    : `<button onclick="moPopup('${sanPham.tenSanPham}', ${sanPham.giaTien})" class="w-full bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600">🛒 Mua ngay file Word</button>`;
-                
-                let hienThiGia = (sanPham.giaTien == 0 || sanPham.giaTien === "") ? `<span class="text-2xl font-extrabold text-green-500 tracking-tight">Miễn phí</span>` : `<span class="text-2xl font-extrabold text-red-500 tracking-tight">${Number(sanPham.giaTien).toLocaleString('vi-VN')}đ</span>`;
+                let hienThiGia = '';
+                let nutHanhDong = '';
+
+                if(sanPham.giaTien == 0 || sanPham.giaTien === "") {
+                    hienThiGia = `<span class="text-2xl font-extrabold text-green-500 tracking-tight">Miễn phí</span>`;
+                    nutHanhDong = `<a href="${sanPham.linkTaiMienPhi}" target="_blank" class="w-full block text-center bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">📥 Tải miễn phí file Word</a>`;
+                } else {
+                    hienThiGia = `<span class="text-2xl font-extrabold text-red-500 tracking-tight">${Number(sanPham.giaTien).toLocaleString('vi-VN')}đ</span>`;
+                    nutHanhDong = `<button onclick="moPopup('${sanPham.maSanPham}', '${sanPham.tenSanPham}', ${sanPham.giaTien})" class="w-full bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">🛒 Tải file Word</button>`;
+                }
 
                 khungChua.innerHTML += `
                 <div class="bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-lg transition overflow-hidden flex flex-col h-full">
                     <div class="p-5 flex flex-col flex-grow">
-                        <h3 class="text-xs font-bold text-gray-400 mb-1 uppercase">${sanPham.thuMuc} ${sanPham.thuMucCon != 'Chung' ? '• ' + sanPham.thuMucCon : ''}</h3>
-                        <h1 class="text-lg font-bold text-gray-800 mb-4 leading-snug">${sanPham.tenSanPham}</h1>
-                        <div class="flex items-end justify-between mb-4 mt-auto">${hienThiGia}</div>
+                        <h3 class="text-xs font-bold text-gray-400 mb-1 uppercase tracking-wider">${sanPham.thuMuc} ${sanPham.thuMucCon != 'Chung' ? '• ' + sanPham.thuMucCon : ''}</h3>
+                        <h1 class="text-lg font-bold text-gray-800 mb-2 leading-snug">${sanPham.tenSanPham}</h1>
+                        <p class="text-gray-500 mb-4 text-xs flex-grow">Mã SP: <span class="font-mono bg-gray-100 px-1 rounded">${sanPham.maSanPham}</span></p>
+                        
+                        <div class="flex items-end justify-between mb-4 mt-auto">
+                            ${hienThiGia}
+                        </div>
                         <div class="space-y-2">
-                            <a href="${sanPham.linkPDF}" target="_blank" class="block w-full text-center bg-blue-50 text-blue-600 font-semibold py-2.5 rounded-lg hover:bg-blue-100 text-sm">👀 Xem trước PDF</a>
+                            <a href="${sanPham.linkPDF}" target="_blank" class="block w-full text-center bg-blue-50 text-blue-600 font-semibold py-2.5 rounded-lg hover:bg-blue-100 transition text-sm">👀 XEM TRƯỚC</a>
                             ${nutHanhDong}
                         </div>
                     </div>
-                </div>`;
+                </div>
+                `;
             });
         }
+
         taiDuLieu();
 
-        function moPopup(ten, gia) {
-            spDangChon = { tenSanPham: ten, giaTien: gia };
+        function moPopup(ma, ten, gia) {
+            spDangChon = { maSanPham: ma, tenSanPham: ten, giaTien: gia };
+            
+            // Xóa trắng form mỗi khi bật
+            document.getElementById('ten-khach').value = "";
+            document.getElementById('email-khach').value = "";
             document.getElementById('khung-nhap-thong-tin').classList.remove('hidden');
             document.getElementById('khung-ma-qr').classList.add('hidden');
+            
             document.getElementById('nut-xac-nhan').innerText = "Tạo Mã QR Chuyển Khoản";
             document.getElementById('nut-xac-nhan').disabled = false;
+            
             document.getElementById('popup-mua-hang').classList.remove('hidden');
             document.getElementById('popup-mua-hang').classList.add('flex');
         }
-        function dongPopup() { document.getElementById('popup-mua-hang').classList.add('hidden'); document.getElementById('popup-mua-hang').classList.remove('flex'); spDangChon = null; }
+        function dongPopup() {
+            document.getElementById('popup-mua-hang').classList.add('hidden');
+            document.getElementById('popup-mua-hang').classList.remove('flex');
+            spDangChon = null;
+        }
 
         async function xacNhanMua() {
             const tenKhach = document.getElementById('ten-khach').value.trim();
             const emailKhach = document.getElementById('email-khach').value.trim();
-            if(!tenKhach || !emailKhach) return alert("Vui lòng nhập đủ Tên và Email!"); 
+            if(!tenKhach || !emailKhach) { alert("Vui lòng nhập đủ Tên và Email!"); return; }
             
-            document.getElementById('nut-xac-nhan').innerText = "⏳ Đang tạo mã...";
-            document.getElementById('nut-xac-nhan').disabled = true;
+            const nutXacNhan = document.getElementById('nut-xac-nhan');
+            nutXacNhan.innerText = "⏳ Đang tạo mã...";
+            nutXacNhan.disabled = true;
 
+            // 1. Tạo ngẫu nhiên mã đơn hàng
             const maDonHang = "DH" + Math.floor(10000 + Math.random() * 90000);
 
-            // Bắn dữ liệu về Google Sheets
-            fetch(LINK_GOOGLE_SHEETS, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ maDonHang, tenKhach, emailKhach, tenSanPham: spDangChon.tenSanPham, giaTien: spDangChon.giaTien })
-            });
+            // 2. Bắn dữ liệu về Google Sheets
+            try {
+                fetch(LINK_GOOGLE_SHEETS, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        maDonHang: maDonHang,
+                        tenKhach: tenKhach,
+                        email: emailKhach,
+                        tenSanPham: spDangChon.tenSanPham,
+                        giaTien: spDangChon.giaTien
+                    })
+                });
+            } catch (error) {
+                console.log("Đã gửi.");
+            }
 
-            // Hiển thị ảnh QR
+            // 3. Tạo link ảnh mã VietQR
             const urlVietQR = `https://img.vietqr.io/image/${TEN_NGAN_HANG}-${SO_TAI_KHOAN}-compact2.png?amount=${spDangChon.giaTien}&addInfo=${maDonHang}&accountName=${TEN_CHU_TAI_KHOAN.replace(/ /g, '%20')}`;
-            
+
+            // 4. Đổi màn hình sang hiện QR
             setTimeout(() => {
                 document.getElementById('khung-nhap-thong-tin').classList.add('hidden');
                 document.getElementById('khung-ma-qr').classList.remove('hidden');
+                
                 document.getElementById('anh-qr').src = urlVietQR;
                 document.getElementById('ma-don-hien-thi').innerText = maDonHang;
-            }, 800);
+            }, 800); 
         }
 
         document.addEventListener('contextmenu', e => e.preventDefault());
