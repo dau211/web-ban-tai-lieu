@@ -6,7 +6,6 @@
     <title>Thư Viện Tài Liệu - THPT Đào Duy Từ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* CSS bổ sung để trang web mượt mà hơn và chống in ấn */
         @media print { body { display: none !important; } }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -31,35 +30,29 @@
     </div>
 </header>
 
-    <!-- Thân trang: Chia làm 2 cột -->
     <div class="flex-grow max-w-7xl mx-auto w-full flex flex-col md:flex-row p-4 gap-6">
-        
-        <!-- Cột bên trái: Danh mục thư mục -->
         <aside class="w-full md:w-1/4 bg-white rounded-xl shadow-sm p-4 border border-gray-100 self-start">
             <h2 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex items-center">
                 <span class="mr-2">📁</span> Danh Mục Tài Liệu
             </h2>
-            <!-- Khung này mã lệnh sẽ tự động nhét các thư mục vào -->
             <div id="danh-sach-thu-muc" class="space-y-2 text-gray-700">
                 <p class="text-sm text-gray-500">Đang tải danh mục...</p>
             </div>
         </aside>
 
-        <!-- Cột bên phải: Danh sách sản phẩm -->
         <main class="w-full md:w-3/4">
             <div class="flex justify-between items-center mb-4">
                 <h2 id="tieu-de-hien-tai" class="text-xl font-bold text-gray-800">Tất cả tài liệu</h2>
                 <span id="so-luong-hien-tai" class="bg-blue-100 text-blue-700 text-sm font-semibold px-3 py-1 rounded-full">0</span>
             </div>
             
-            <!-- Khung này mã lệnh sẽ tự động nhét các ô sản phẩm vào -->
             <div id="danh-sach-san-pham" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5">
                 <p class="text-center w-full col-span-full text-gray-500 py-10">⏳ Đang tải dữ liệu từ kho Google Sheets...</p>
             </div>
         </main>
     </div>
 
-    <!-- Khung Popup ẩn để hỏi thông tin khách hàng (Giữ nguyên tính năng) -->
+    <!-- Popup Mua Hàng -->
     <div id="popup-mua-hang" class="fixed inset-0 bg-black bg-opacity-60 hidden flex-col items-center justify-center p-4 z-50">
         <div class="bg-white p-6 rounded-xl w-full max-w-sm shadow-2xl relative">
             <h3 class="text-xl font-bold text-gray-800 mb-2">Thông tin nhận tài liệu</h3>
@@ -77,7 +70,6 @@
         </div>
     </div>
 
-    <!-- BỘ NÃO XỬ LÝ GIAO DIỆN -->
     <script>
         // 1. DÁN LINK GOOGLE SHEETS CỦA BẠN VÀO GIỮA 2 DẤU NGOẶC KÉP DƯỚI ĐÂY:
         const LINK_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbxdLiMh4FAHMeurvp9yuJTkzvfTD6AVNHv_QBB4NKKSrdgsAOzE-Fb-xwauChx24NxKDg/exec";
@@ -85,12 +77,10 @@
         let duLieuGoc = [];
         let spDangChon = null;
 
-        // Hàm 1: Kéo dữ liệu từ kho về
         async function taiDuLieu() {
             try {
                 const response = await fetch(LINK_GOOGLE_SHEETS);
                 duLieuGoc = await response.json();
-                
                 taoCayThuMuc(duLieuGoc);
                 hienThiSanPham(duLieuGoc, "Tất cả tài liệu");
             } catch (error) {
@@ -98,7 +88,6 @@
             }
         }
 
-        // Hàm 2: Tự động gom nhóm tạo cây thư mục
         function taoCayThuMuc(data) {
             const thuMucMap = {};
             data.forEach(sp => {
@@ -109,53 +98,25 @@
             });
 
             const khungThuMuc = document.getElementById('danh-sach-thu-muc');
-            khungThuMuc.innerHTML = `
-                <div onclick="hienThiSanPham(duLieuGoc, 'Tất cả tài liệu')" class="cursor-pointer font-bold text-blue-600 hover:text-blue-800 py-1 transition">
-                    🌍 Tất cả tài liệu
-                </div>
-            `;
+            khungThuMuc.innerHTML = `<div onclick="hienThiSanPham(duLieuGoc, 'Tất cả tài liệu')" class="cursor-pointer font-bold text-blue-600 hover:text-blue-800 py-1 transition">🌍 Tất cả tài liệu</div>`;
 
             for (const tm in thuMucMap) {
                 let htmlThuMucCon = '';
                 thuMucMap[tm].forEach(tmc => {
-                    htmlThuMucCon += `
-                        <div onclick="locSanPham('${tm}', '${tmc}')" class="cursor-pointer pl-6 py-1 text-sm text-gray-600 hover:text-blue-500 border-l-2 border-transparent hover:border-blue-400 transition">
-                            ↳ ${tmc}
-                        </div>
-                    `;
+                    htmlThuMucCon += `<div onclick="locSanPham('${tm}', '${tmc}')" class="cursor-pointer pl-6 py-1 text-sm text-gray-600 hover:text-blue-500 border-l-2 border-transparent hover:border-blue-400 transition">↳ ${tmc}</div>`;
                 });
-
-                khungThuMuc.innerHTML += `
-                    <div class="mt-3">
-                        <div onclick="locSanPham('${tm}', null)" class="cursor-pointer font-semibold text-gray-800 hover:text-blue-600 py-1 flex items-center transition">
-                            📂 ${tm}
-                        </div>
-                        <div class="flex flex-col">${htmlThuMucCon}</div>
-                    </div>
-                `;
+                khungThuMuc.innerHTML += `<div class="mt-3"><div onclick="locSanPham('${tm}', null)" class="cursor-pointer font-semibold text-gray-800 hover:text-blue-600 py-1 flex items-center transition">📂 ${tm}</div><div class="flex flex-col">${htmlThuMucCon}</div></div>`;
             }
         }
 
-        // Hàm 3: Lọc tài liệu khi bấm vào thư mục
         function locSanPham(tm, tmc) {
-            let sanPhamLoc = [];
-            let tieuDe = tm;
-            
-            if(tmc) {
-                sanPhamLoc = duLieuGoc.filter(sp => sp.thuMuc === tm && sp.thuMucCon === tmc);
-                tieuDe = `${tm} / ${tmc}`;
-            } else {
-                sanPhamLoc = duLieuGoc.filter(sp => sp.thuMuc === tm);
-            }
-            
-            hienThiSanPham(sanPhamLoc, tieuDe);
+            let sanPhamLoc = tmc ? duLieuGoc.filter(sp => sp.thuMuc === tm && sp.thuMucCon === tmc) : duLieuGoc.filter(sp => sp.thuMuc === tm);
+            hienThiSanPham(sanPhamLoc, tmc ? `${tm} / ${tmc}` : tm);
         }
 
-        // Hàm 4: Đúc khuôn tài liệu ra màn hình
         function hienThiSanPham(danhSach, tieuDe) {
             document.getElementById('tieu-de-hien-tai').innerText = tieuDe;
             document.getElementById('so-luong-hien-tai').innerText = danhSach.length;
-            
             const khungChua = document.getElementById('danh-sach-san-pham');
             khungChua.innerHTML = ''; 
 
@@ -165,25 +126,42 @@
             }
             
             danhSach.forEach(sanPham => {
+                let hienThiGia = '';
+                let nutHanhDong = '';
+
+                // KIỂM TRA: Nếu giá = 0 thì làm nút Miễn phí
+                if(sanPham.giaTien == 0 || sanPham.giaTien === "") {
+                    hienThiGia = `<span class="text-2xl font-extrabold text-green-500 tracking-tight">Miễn phí</span>`;
+                    nutHanhDong = `
+                        <a href="${sanPham.linkTaiMienPhi}" target="_blank" class="w-full block text-center bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">
+                            📥 Tải miễn phí file Word
+                        </a>
+                    `;
+                } else {
+                    // Ngược lại thì làm nút Mua hàng
+                    hienThiGia = `<span class="text-2xl font-extrabold text-red-500 tracking-tight">${Number(sanPham.giaTien).toLocaleString('vi-VN')}đ</span>`;
+                    nutHanhDong = `
+                        <button onclick="moPopup('${sanPham.maSanPham}', '${sanPham.tenSanPham}', ${sanPham.giaTien})" class="w-full bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">
+                            🛒 Mua ngay file Word
+                        </button>
+                    `;
+                }
+
                 khungChua.innerHTML += `
                 <div class="bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-lg transition overflow-hidden flex flex-col h-full">
                     <div class="p-5 flex flex-col flex-grow">
-                        <h3 class="text-xs font-bold text-gray-400 mb-1 uppercase tracking-wider">
-                            ${sanPham.thuMuc} ${sanPham.thuMucCon != 'Chung' ? '• ' + sanPham.thuMucCon : ''}
-                        </h3>
+                        <h3 class="text-xs font-bold text-gray-400 mb-1 uppercase tracking-wider">${sanPham.thuMuc} ${sanPham.thuMucCon != 'Chung' ? '• ' + sanPham.thuMucCon : ''}</h3>
                         <h1 class="text-lg font-bold text-gray-800 mb-2 leading-snug">${sanPham.tenSanPham}</h1>
                         <p class="text-gray-500 mb-4 text-xs flex-grow">Mã SP: <span class="font-mono bg-gray-100 px-1 rounded">${sanPham.maSanPham}</span></p>
                         
                         <div class="flex items-end justify-between mb-4 mt-auto">
-                            <span class="text-2xl font-extrabold text-red-500 tracking-tight">${Number(sanPham.giaTien).toLocaleString('vi-VN')}đ</span>
+                            ${hienThiGia}
                         </div>
                         <div class="space-y-2">
                             <a href="${sanPham.linkPDF}" target="_blank" class="block w-full text-center bg-blue-50 text-blue-600 font-semibold py-2.5 rounded-lg hover:bg-blue-100 transition text-sm">
                                 👀 Xem trước PDF
                             </a>
-                            <button onclick="moPopup('${sanPham.maSanPham}', '${sanPham.tenSanPham}', ${sanPham.giaTien})" class="w-full bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">
-                                🛒 Mua ngay file Word
-                            </button>
+                            ${nutHanhDong}
                         </div>
                     </div>
                 </div>
@@ -191,10 +169,8 @@
             });
         }
 
-        // Bật công tắc chạy hệ thống
         taiDuLieu();
 
-        // Các hàm xử lý Popup và chống sao chép giữ nguyên
         function moPopup(ma, ten, gia) {
             spDangChon = { maSanPham: ma, tenSanPham: ten, giaTien: gia };
             document.getElementById('popup-mua-hang').classList.remove('hidden');
