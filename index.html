@@ -238,14 +238,14 @@
             if(!tenKhach || !emailKhach) { alert("Vui lòng nhập đủ Tên và Email!"); return; }
             
             const nutXacNhan = document.getElementById('nut-xac-nhan');
-            nutXacNhan.innerText = "⏳ Đang kết nối PayOS...";
+            nutXacNhan.innerText = "⏳ Đang tạo mã QR...";
             nutXacNhan.disabled = true;
 
-            // PayOS yêu cầu mã đơn phải là số nguyên
-            const maDonHang = Math.floor(100000 + Math.random() * 900000);
+            // Mang tiền tố DH trở lại làm lá chắn bảo vệ an toàn cho hệ thống nhận diện SePay
+            const maDonHang = "DH" + Math.floor(100000 + Math.random() * 900000);
 
             try {
-                // Khai báo tạo đơn để Google Code liên kết với PayOS
+                // Đẩy thông tin đơn hàng lên Google Sheets
                 await fetch(LINK_GOOGLE_SHEETS, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -263,7 +263,8 @@
                 console.log("Đã gửi.");
             }
 
-            const urlVietQR = `https://img.vietqr.io/image/${TEN_NGAN_HANG}-${SO_TAI_KHOAN}-compact2.png?amount=${spDangChon.giaTien}&addInfo=TT%20${maDonHang}%20OK&accountName=${TEN_CHU_TAI_KHOAN.replace(/ /g, '%20')}`;
+            // Sinh mã VietQR có kèm chữ DH
+            const urlVietQR = `https://img.vietqr.io/image/${TEN_NGAN_HANG}-${SO_TAI_KHOAN}-compact2.png?amount=${spDangChon.giaTien}&addInfo=${maDonHang}&accountName=${TEN_CHU_TAI_KHOAN.replace(/ /g, '%20')}`;
 
             setTimeout(() => {
                 document.getElementById('khung-nhap-thong-tin').classList.add('hidden');
