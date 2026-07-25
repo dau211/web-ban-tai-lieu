@@ -52,8 +52,7 @@
             
             <div id="khung-nhap-thong-tin">
                 <h3 class="text-xl font-bold text-gray-800 mb-2">Thông tin nhận tài liệu</h3>
-                <!-- Đã sửa chữ file Word thành file gốc -->
-                <p class="text-sm text-gray-500 mb-4">Vui lòng nhập chính xác Email để hệ thống gửi link file gốc sau khi thanh toán.</p>
+                <p class="text-sm text-gray-500 mb-4">Vui lòng nhập chính xác Email để hệ thống tự động gửi file sau khi thanh toán.</p>
                 
                 <input id="ten-khach" type="text" placeholder="Họ và tên của bạn" class="w-full border border-gray-300 p-3 mb-3 rounded-lg outline-none focus:border-blue-500">
                 <input id="email-khach" type="email" placeholder="Email nhận file" class="w-full border border-gray-300 p-3 mb-4 rounded-lg outline-none focus:border-blue-500">
@@ -68,12 +67,12 @@
 
             <div id="khung-ma-qr" class="hidden text-center w-full">
                 <h3 class="text-lg font-bold text-blue-600 mb-1">Quét mã để thanh toán</h3>
-                <p class="text-xs text-gray-500 mb-3">Tài liệu sẽ được gửi vào Email của bạn ngay sau khi chúng tôi duyệt giao dịch. ĐT liên hệ: 0942814467</p>
+                <p class="text-xs text-gray-500 mb-3">Tài liệu sẽ <b>TỰ ĐỘNG</b> được gửi vào Email ngay khi bạn thanh toán thành công. ĐT: 0942814467</p>
                 
                 <img id="anh-qr" src="" alt="Mã QR Thanh Toán" class="mx-auto w-56 h-56 border border-gray-200 rounded-xl mb-3 shadow-sm">
                 
                 <div class="bg-yellow-50 text-yellow-800 p-3 rounded-lg text-sm mb-4 border border-yellow-200 shadow-inner">
-                    <p class="mb-1">Nội dung chuyển khoản:</p>
+                    <p class="mb-1">Nội dung chuyển khoản (Tự động điền):</p>
                     <strong id="ma-don-hien-thi" class="text-2xl text-red-600 tracking-widest font-mono"></strong>
                 </div>
                 
@@ -83,7 +82,7 @@
                         Tải QR về máy thanh toán sau
                     </button>
                     <button onclick="dongPopup()" class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition shadow">
-                        Thanh toán trực tiếp (Đóng)
+                        Hoàn tất (Đóng)
                     </button>
                 </div>
             </div>
@@ -180,8 +179,6 @@
             danhSach.forEach(sanPham => {
                 let hienThiGia = '';
                 let nutHanhDong = '';
-                
-                // Lấy loại file từ dữ liệu (Word, PDF, HTML, v.v.)
                 let loai = sanPham.loaiFile; 
 
                 if(sanPham.giaTien == 0 || sanPham.giaTien === "") {
@@ -241,17 +238,20 @@
             if(!tenKhach || !emailKhach) { alert("Vui lòng nhập đủ Tên và Email!"); return; }
             
             const nutXacNhan = document.getElementById('nut-xac-nhan');
-            nutXacNhan.innerText = "⏳ Đang tạo mã...";
+            nutXacNhan.innerText = "⏳ Đang kết nối PayOS...";
             nutXacNhan.disabled = true;
 
-            const maDonHang = "DH" + Math.floor(10000 + Math.random() * 90000);
+            // PayOS yêu cầu mã đơn phải là số nguyên
+            const maDonHang = Math.floor(100000 + Math.random() * 900000);
 
             try {
-                fetch(LINK_GOOGLE_SHEETS, {
+                // Khai báo tạo đơn để Google Code liên kết với PayOS
+                await fetch(LINK_GOOGLE_SHEETS, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
+                        action: 'createOrder',
                         maDonHang: maDonHang,
                         tenKhach: tenKhach,
                         email: emailKhach,
