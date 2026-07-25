@@ -263,7 +263,7 @@
                 console.log("Đã gửi.");
             }
 
-            const urlVietQR = `https://img.vietqr.io/image/${TEN_NGAN_HANG}-${SO_TAI_KHOAN}-compact2.png?amount=${spDangChon.giaTien}&addInfo=${maDonHang}&accountName=${TEN_CHU_TAI_KHOAN.replace(/ /g, '%20')}`;
+            const urlVietQR = `https://img.vietqr.io/image/${TEN_NGAN_HANG}-${SO_TAI_KHOAN}-compact2.png?amount=${spDangChon.giaTien}&addInfo=TT%20${maDonHang}%20OK&accountName=${TEN_CHU_TAI_KHOAN.replace(/ /g, '%20')}`;
 
             setTimeout(() => {
                 document.getElementById('khung-nhap-thong-tin').classList.add('hidden');
