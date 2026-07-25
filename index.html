@@ -52,7 +52,8 @@
             
             <div id="khung-nhap-thong-tin">
                 <h3 class="text-xl font-bold text-gray-800 mb-2">Thông tin nhận tài liệu</h3>
-                <p class="text-sm text-gray-500 mb-4">Vui lòng nhập chính xác Email để hệ thống tự động gửi file sau khi thanh toán.</p>
+                <!-- Đã sửa chữ file Word thành file gốc -->
+                <p class="text-sm text-gray-500 mb-4">Vui lòng nhập chính xác Email để hệ thống gửi link file gốc sau khi thanh toán.</p>
                 
                 <input id="ten-khach" type="text" placeholder="Họ và tên của bạn" class="w-full border border-gray-300 p-3 mb-3 rounded-lg outline-none focus:border-blue-500">
                 <input id="email-khach" type="email" placeholder="Email nhận file" class="w-full border border-gray-300 p-3 mb-4 rounded-lg outline-none focus:border-blue-500">
@@ -67,12 +68,12 @@
 
             <div id="khung-ma-qr" class="hidden text-center w-full">
                 <h3 class="text-lg font-bold text-blue-600 mb-1">Quét mã để thanh toán</h3>
-                <p class="text-xs text-gray-500 mb-3">Tài liệu sẽ <b>TỰ ĐỘNG</b> được gửi vào Email ngay khi bạn thanh toán thành công. ĐT: 0942814467</p>
+                <p class="text-xs text-gray-500 mb-3">Tài liệu sẽ được gửi vào Email của bạn ngay sau khi chúng tôi duyệt giao dịch. ĐT liên hệ: 0942814467</p>
                 
                 <img id="anh-qr" src="" alt="Mã QR Thanh Toán" class="mx-auto w-56 h-56 border border-gray-200 rounded-xl mb-3 shadow-sm">
                 
                 <div class="bg-yellow-50 text-yellow-800 p-3 rounded-lg text-sm mb-4 border border-yellow-200 shadow-inner">
-                    <p class="mb-1">Nội dung chuyển khoản (Tự động điền):</p>
+                    <p class="mb-1">Nội dung chuyển khoản:</p>
                     <strong id="ma-don-hien-thi" class="text-2xl text-red-600 tracking-widest font-mono"></strong>
                 </div>
                 
@@ -82,7 +83,7 @@
                         Tải QR về máy thanh toán sau
                     </button>
                     <button onclick="dongPopup()" class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition shadow">
-                        Hoàn tất (Đóng)
+                        Thanh toán trực tiếp (Đóng)
                     </button>
                 </div>
             </div>
@@ -93,8 +94,8 @@
     <script>
         const LINK_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbyQk2WSgyceKw4hoIYvOFoH3qWDHijnvpF5r3SCESSSzHgxKoGvvn39075y4x10WQyc0Q/exec";
 
-        const TEN_NGAN_HANG = "BIDV"; 
-        const SO_TAI_KHOAN = "8819606199"; 
+        const TEN_NGAN_HANG = "Vietcombank"; 
+        const SO_TAI_KHOAN = "9942814467"; 
         const TEN_CHU_TAI_KHOAN = "DAU NAM THANH";
 
         let duLieuGoc = [];
@@ -179,6 +180,8 @@
             danhSach.forEach(sanPham => {
                 let hienThiGia = '';
                 let nutHanhDong = '';
+                
+                // Lấy loại file từ dữ liệu (Word, PDF, HTML, v.v.)
                 let loai = sanPham.loaiFile; 
 
                 if(sanPham.giaTien == 0 || sanPham.giaTien === "") {
@@ -238,20 +241,17 @@
             if(!tenKhach || !emailKhach) { alert("Vui lòng nhập đủ Tên và Email!"); return; }
             
             const nutXacNhan = document.getElementById('nut-xac-nhan');
-            nutXacNhan.innerText = "⏳ Đang tạo mã QR...";
+            nutXacNhan.innerText = "⏳ Đang tạo mã...";
             nutXacNhan.disabled = true;
 
-            // Mang tiền tố DH trở lại làm lá chắn bảo vệ an toàn cho hệ thống nhận diện SePay
-            const maDonHang = "DH" + Math.floor(100000 + Math.random() * 900000);
+            const maDonHang = "DH" + Math.floor(10000 + Math.random() * 90000);
 
             try {
-                // Đẩy thông tin đơn hàng lên Google Sheets
-                await fetch(LINK_GOOGLE_SHEETS, {
+                fetch(LINK_GOOGLE_SHEETS, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        action: 'createOrder',
                         maDonHang: maDonHang,
                         tenKhach: tenKhach,
                         email: emailKhach,
@@ -263,7 +263,6 @@
                 console.log("Đã gửi.");
             }
 
-            // Sinh mã VietQR có kèm chữ DH
             const urlVietQR = `https://img.vietqr.io/image/${TEN_NGAN_HANG}-${SO_TAI_KHOAN}-compact2.png?amount=${spDangChon.giaTien}&addInfo=${maDonHang}&accountName=${TEN_CHU_TAI_KHOAN.replace(/ /g, '%20')}`;
 
             setTimeout(() => {
