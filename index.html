@@ -52,7 +52,6 @@
             
             <div id="khung-nhap-thong-tin">
                 <h3 class="text-xl font-bold text-gray-800 mb-2">Thông tin nhận tài liệu</h3>
-                <!-- Đã sửa chữ file Word thành file gốc -->
                 <p class="text-sm text-gray-500 mb-4">Vui lòng nhập chính xác Email để hệ thống gửi link file gốc sau khi thanh toán.</p>
                 
                 <input id="ten-khach" type="text" placeholder="Họ và tên của bạn" class="w-full border border-gray-300 p-3 mb-3 rounded-lg outline-none focus:border-blue-500">
@@ -195,7 +194,6 @@
                 khungChua.innerHTML += `
                 <div class="bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-lg transition overflow-hidden flex flex-col h-full">
                     <div class="p-5 flex flex-col flex-grow">
-                        <h3 class="text-xs font-bold text-gray-400 mb-1 uppercase tracking-wider">${sanPham.thuMuc} ${sanPham.thuMucCon != 'Chung' ? '• ' + sanPham.thuMucCon : ''}</h3>
                         <h1 class="text-lg font-bold text-gray-800 mb-2 leading-snug">${sanPham.tenSanPham}</h1>
                         <p class="text-gray-500 mb-4 text-xs flex-grow">Mã SP: <span class="font-mono bg-gray-100 px-1 rounded">${sanPham.maSanPham}</span></p>
                         
