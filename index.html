@@ -97,7 +97,6 @@
     const SO_TAI_KHOAN = "107887757071"; 
     const TEN_CHU_TAI_KHOAN = "DAU NAM THANH";
 
-    // CẤU HÌNH CỘT PHÂN CẤP (Cập nhật theo tên biến chuẩn: ThuMuc, ThuMucCon...)
     const COT_PHAN_CAP = ['ThuMuc', 'ThuMucCon', 'ThuMucCap1', 'ThuMucCap2', 'ThuMucCap3']; 
 
     let duLieuGoc = [];
@@ -220,6 +219,9 @@
             let hienThiGia = '';
             let nutHanhDong = '';
             let loai = sanPham.loaiFile || 'Tài liệu'; 
+            
+            // Xử lý link ảnh đại diện (Thêm ảnh mặc định nếu để trống)
+            let linkAnh = sanPham.anhDaiDien || 'https://placehold.co/600x300/e2e8f0/475569?text=Tai+Lieu';
 
             if(sanPham.giaTien == 0 || sanPham.giaTien === "") {
                 hienThiGia = `<span class="text-2xl font-extrabold text-green-500 tracking-tight">Miễn phí</span>`;
@@ -229,8 +231,14 @@
                 nutHanhDong = `<button onclick="moPopup('${sanPham.maSanPham}', '${sanPham.tenSanPham}', ${sanPham.giaTien})" class="w-full bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">🛒 Tải file ${loai}</button>`;
             }
 
+            // Giao diện thẻ sản phẩm đã bổ sung thẻ <img>
             khungChua.innerHTML += `
             <div class="bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-lg transition overflow-hidden flex flex-col h-full">
+                <!-- Khung chứa ảnh đại diện -->
+                <div class="w-full h-48 bg-gray-100 border-b border-gray-100 overflow-hidden">
+                    <img src="${linkAnh}" alt="${sanPham.tenSanPham}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                </div>
+                
                 <div class="p-5 flex flex-col flex-grow">
                     <h1 class="text-lg font-bold text-gray-800 mb-2 leading-snug">${sanPham.tenSanPham}</h1>
                     <p class="text-gray-500 mb-4 text-xs flex-grow">Mã SP: <span class="font-mono bg-gray-100 px-1 rounded">${sanPham.maSanPham}</span></p>
