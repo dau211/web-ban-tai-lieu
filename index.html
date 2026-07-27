@@ -235,9 +235,10 @@
             khungChua.innerHTML += `
             <div class="bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-lg transition overflow-hidden flex flex-col h-full">
                 <!-- Khung chứa ảnh đại diện -->
-                <div class="w-full h-48 bg-gray-100 border-b border-gray-100 overflow-hidden">
-                    <img src="${linkAnh}" alt="${sanPham.tenSanPham}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
-                </div>
+               <!-- Khung chứa ảnh đại diện -->
+<div class="w-full h-48 bg-gray-50 border-b border-gray-100 overflow-hidden flex items-center justify-center p-2">
+    <img src="${linkAnh}" alt="${sanPham.tenSanPham}" class="w-full h-full object-contain hover:scale-105 transition-transform duration-300">
+</div>
                 
                 <div class="p-5 flex flex-col flex-grow">
                     <h1 class="text-lg font-bold text-gray-800 mb-2 leading-snug">${sanPham.tenSanPham}</h1>
