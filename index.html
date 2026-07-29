@@ -244,7 +244,8 @@
                 hienThiGia = `<span class="text-2xl font-extrabold text-green-500 tracking-tight">Miễn phí 🎁</span>`;
                 nutHanhDong = `
                     <div class="flex flex-col gap-2">
-                        <a href="${sanPham.linkTaiMienPhi}" target="_blank" class="w-full block text-center bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">📥 Tải miễn phí</a>
+                        <!-- THÊM HÀM onclick="ghiNhanLuotTai(...)" -->
+                        <a href="${sanPham.linkTaiMienPhi}" target="_blank" onclick="ghiNhanLuotTai('${sanPham.maSanPham}')" class="w-full block text-center bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">📥 Tải miễn phí</a>
                         <button onclick="moPopupUngHo('${sanPham.tenSanPham}')" class="w-full bg-rose-50 text-rose-600 font-semibold py-2 rounded-lg border border-rose-200 hover:bg-rose-100 transition shadow-sm text-sm flex justify-center items-center">
                             💖 Ủng hộ tùy tâm
                         </button>
@@ -263,7 +264,12 @@
                 
                 <div class="p-5 flex flex-col flex-grow">
                     <h1 class="text-lg font-bold text-gray-800 mb-2 leading-snug">${sanPham.tenSanPham}</h1>
-                    <p class="text-gray-500 mb-4 text-xs flex-grow">Mã SP: <span class="font-mono bg-gray-100 px-1 rounded">${sanPham.maSanPham}</span></p>
+                    
+                    <!-- HIỂN THỊ LƯỢT TẢI Ở ĐÂY -->
+                    <div class="flex justify-between items-center text-gray-500 mb-4 text-xs">
+                        <p>Mã SP: <span class="font-mono bg-gray-100 px-1 rounded">${sanPham.maSanPham}</span></p>
+                        <p class="font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">⬇️ ${sanPham.luotTai || 0} lượt tải</p>
+                    </div>
                     
                     <div class="flex items-end justify-between mb-4 mt-auto">
                         ${hienThiGia}
@@ -362,8 +368,7 @@
 
     // --- CÁC HÀM XỬ LÝ POPUP ỦNG HỘ ---
     function moPopupUngHo(tenTaiLieu) {
-        // Tạo link QR VietQR không có tham số amount (số tiền) để người dùng tự nhập
-        const noiDungCK = "Ung ho " + tenTaiLieu.substring(0, 15).replace(/[^a-zA-Z0-9 ]/g, ""); // Lọc bớt ký tự đặc biệt
+        const noiDungCK = "Ung ho " + tenTaiLieu.substring(0, 15).replace(/[^a-zA-Z0-9 ]/g, ""); 
         const urlQR = `https://img.vietqr.io/image/${TEN_NGAN_HANG}-${SO_TAI_KHOAN}-compact2.png?addInfo=${noiDungCK}&accountName=${TEN_CHU_TAI_KHOAN.replace(/ /g, '%20')}`;
         
         document.getElementById('anh-qr-ung-ho').src = urlQR;
@@ -374,6 +379,19 @@
     function dongPopupUngHo() {
         document.getElementById('popup-ung-ho').classList.add('hidden');
         document.getElementById('popup-ung-ho').classList.remove('flex');
+    }
+
+    // --- HÀM GHI NHẬN LƯỢT TẢI NGẦM ---
+    function ghiNhanLuotTai(maSP) {
+        fetch(LINK_GOOGLE_SHEETS, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: "tangLuotTai",
+                maSanPham: maSP
+            })
+        });
     }
 
     // --- BẢO MẬT CƠ BẢN ---
