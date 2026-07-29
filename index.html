@@ -22,7 +22,7 @@
             Chọn lọc - Chất lượng - Cập nhật liên tục (ĐT: 0942.814.467)
         </p>
     </div>
-</header>
+    </header>
 
     <div class="flex-grow max-w-7xl mx-auto w-full flex flex-col md:flex-row p-4 gap-6">
         <aside class="w-full md:w-1/4 bg-white rounded-xl shadow-sm p-4 border border-gray-100 self-start">
@@ -90,9 +90,25 @@
         </div>
     </div>
 
-    <script>
-    const LINK_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbyQk2WSgyceKw4hoIYvOFoH3qWDHijnvpF5r3SCESSSzHgxKoGvvn39075y4x10WQyc0Q/exec";
+    <!-- Popup Ủng Hộ -->
+    <div id="popup-ung-ho" class="fixed inset-0 bg-black bg-opacity-60 hidden flex-col items-center justify-center p-4 z-50">
+        <div class="bg-white p-6 rounded-xl w-full max-w-sm shadow-2xl relative text-center">
+            <h3 class="text-xl font-bold text-rose-600 mb-2">💖 Cảm ơn bạn rất nhiều!</h3>
+            <p class="text-sm text-gray-600 mb-4">Sự ủng hộ của bạn là động lực lớn để Thư Viện tiếp tục duy trì và cập nhật thêm nhiều tài liệu hay.</p>
+            
+            <img id="anh-qr-ung-ho" src="" alt="Mã QR Ủng Hộ" class="mx-auto w-56 h-56 border border-gray-200 rounded-xl mb-3 shadow-sm">
+            
+            <p class="text-xs text-gray-500 mb-4">Quét mã bằng App Ngân hàng.<br>Số tiền ủng hộ do bạn <b>tùy tâm nhập</b> nhé! 5K, 10K, 15K, 20K </p>
+            
+            <button onclick="dongPopupUngHo()" class="w-full bg-gray-100 text-gray-800 font-semibold py-3 rounded-lg hover:bg-gray-200 transition shadow-sm">
+                Đóng cửa sổ
+            </button>
+        </div>
+    </div>
 
+<script>
+    // --- KHAI BÁO CẤU HÌNH ---
+    const LINK_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbyQk2WSgyceKw4hoIYvOFoH3qWDHijnvpF5r3SCESSSzHgxKoGvvn39075y4x10WQyc0Q/exec";
     const TEN_NGAN_HANG = "VietinBank"; 
     const SO_TAI_KHOAN = "107887757071"; 
     const TEN_CHU_TAI_KHOAN = "DAU NAM THANH";
@@ -102,6 +118,7 @@
     let duLieuGoc = [];
     let spDangChon = null;
 
+    // --- CÁC HÀM XỬ LÝ DỮ LIỆU ---
     async function taiDuLieu() {
         try {
             const response = await fetch(LINK_GOOGLE_SHEETS);
@@ -220,25 +237,29 @@
             let nutHanhDong = '';
             let loai = sanPham.loaiFile || 'Tài liệu'; 
             
-            // Xử lý link ảnh đại diện (Thêm ảnh mặc định nếu để trống)
             let linkAnh = sanPham.anhDaiDien || 'https://placehold.co/600x300/e2e8f0/475569?text=Tai+Lieu';
 
+            // GIAO DIỆN XỬ LÝ MỨC GIÁ / MIỄN PHÍ Ở ĐÂY
             if(sanPham.giaTien == 0 || sanPham.giaTien === "") {
-                hienThiGia = `<span class="text-2xl font-extrabold text-green-500 tracking-tight">Miễn phí</span>`;
-                nutHanhDong = `<a href="${sanPham.linkTaiMienPhi}" target="_blank" class="w-full block text-center bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">📥 Tải miễn phí file ${loai}</a>`;
+                hienThiGia = `<span class="text-2xl font-extrabold text-green-500 tracking-tight">Miễn phí 🎁</span>`;
+                nutHanhDong = `
+                    <div class="flex flex-col gap-2">
+                        <a href="${sanPham.linkTaiMienPhi}" target="_blank" class="w-full block text-center bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">📥 Tải miễn phí</a>
+                        <button onclick="moPopupUngHo('${sanPham.tenSanPham}')" class="w-full bg-rose-50 text-rose-600 font-semibold py-2 rounded-lg border border-rose-200 hover:bg-rose-100 transition shadow-sm text-sm flex justify-center items-center">
+                            💖 Ủng hộ tùy tâm
+                        </button>
+                    </div>
+                `;
             } else {
                 hienThiGia = `<span class="text-2xl font-extrabold text-red-500 tracking-tight">${Number(sanPham.giaTien).toLocaleString('vi-VN')}đ</span>`;
                 nutHanhDong = `<button onclick="moPopup('${sanPham.maSanPham}', '${sanPham.tenSanPham}', ${sanPham.giaTien})" class="w-full bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition shadow text-sm">🛒 Tải file ${loai}</button>`;
             }
 
-            // Giao diện thẻ sản phẩm đã bổ sung thẻ <img>
             khungChua.innerHTML += `
             <div class="bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-lg transition overflow-hidden flex flex-col h-full">
-                <!-- Khung chứa ảnh đại diện -->
-               <!-- Khung chứa ảnh đại diện -->
-<div class="w-full h-48 bg-gray-50 border-b border-gray-100 overflow-hidden flex items-center justify-center p-2">
-    <img src="${linkAnh}" alt="${sanPham.tenSanPham}" class="w-full h-full object-contain hover:scale-105 transition-transform duration-300">
-</div>
+                <div class="w-full h-48 bg-gray-50 border-b border-gray-100 overflow-hidden flex items-center justify-center p-2">
+                    <img src="${linkAnh}" alt="${sanPham.tenSanPham}" class="w-full h-full object-contain hover:scale-105 transition-transform duration-300">
+                </div>
                 
                 <div class="p-5 flex flex-col flex-grow">
                     <h1 class="text-lg font-bold text-gray-800 mb-2 leading-snug">${sanPham.tenSanPham}</h1>
@@ -259,6 +280,7 @@
 
     taiDuLieu();
 
+    // --- CÁC HÀM XỬ LÝ POPUP MUA HÀNG ---
     function moPopup(ma, ten, gia) {
         spDangChon = { maSanPham: ma, tenSanPham: ten, giaTien: gia };
         
@@ -338,6 +360,23 @@
         }
     }
 
+    // --- CÁC HÀM XỬ LÝ POPUP ỦNG HỘ ---
+    function moPopupUngHo(tenTaiLieu) {
+        // Tạo link QR VietQR không có tham số amount (số tiền) để người dùng tự nhập
+        const noiDungCK = "Ung ho " + tenTaiLieu.substring(0, 15).replace(/[^a-zA-Z0-9 ]/g, ""); // Lọc bớt ký tự đặc biệt
+        const urlQR = `https://img.vietqr.io/image/${TEN_NGAN_HANG}-${SO_TAI_KHOAN}-compact2.png?addInfo=${noiDungCK}&accountName=${TEN_CHU_TAI_KHOAN.replace(/ /g, '%20')}`;
+        
+        document.getElementById('anh-qr-ung-ho').src = urlQR;
+        document.getElementById('popup-ung-ho').classList.remove('hidden');
+        document.getElementById('popup-ung-ho').classList.add('flex');
+    }
+
+    function dongPopupUngHo() {
+        document.getElementById('popup-ung-ho').classList.add('hidden');
+        document.getElementById('popup-ung-ho').classList.remove('flex');
+    }
+
+    // --- BẢO MẬT CƠ BẢN ---
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('keydown', e => { if (e.key === 'F12' || (e.ctrlKey && e.key === 'p') || (e.ctrlKey && e.shiftKey && e.key === 'I')) e.preventDefault(); });
 </script>
